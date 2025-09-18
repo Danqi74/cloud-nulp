@@ -1,0 +1,7 @@
+flask
+flask-smorest
+flask_sqlalchemy
+pymysql
+marshmallow
+python-dotenv
+requests 
