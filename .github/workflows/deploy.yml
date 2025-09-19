@@ -3,7 +3,7 @@ name: Deploy to VM
 on:
   push:
     branches:
-      - lab_1
+      - main
 
 jobs:
   deploy:
@@ -24,7 +24,7 @@ jobs:
         echo 'Starting deployment...'
         cd /home/danylo_hnyp_ir_2023/cloud-nulp || exit
         git fetch --all
-        git reset --hard origin/lab_1
+        git reset --hard origin/main
         sudo systemctl restart apache2
         echo 'Deployment finished.'
         "
