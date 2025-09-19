@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy to VM
       run: |
-        ssh -o StrictHostKeyChecking=no danylo_hnyp_ir_2023@nulp-lab-1.duckdns.org "
+        ssh -o StrictHostKeyChecking=no root@nulp-lab-1.duckdns.org "
         echo 'Starting deployment...'
         cd /home/danylo_hnyp_ir_2023/cloud-nulp || exit
         git fetch --all
