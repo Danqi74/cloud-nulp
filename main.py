@@ -31,7 +31,7 @@ app = Flask(__name__)
 CORS(app)
 
 app.config["PROPAGATE_EXCEPTIONS"] = True
-app.config["API_TITLE"] = "DB REST API"
+app.config["API_TITLE"] = "Сloud REST API"
 app.config["API_VERSION"] = "v1"
 app.config["OPENAPI_VERSION"] = "3.0.3"
 app.config["OPENAPI_URL_PREFIX"] = "/"
