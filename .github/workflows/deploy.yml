@@ -1,0 +1,30 @@
+name: Deploy to VM
+
+on:
+  push:
+    branches:
+      - lab_1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Start SSH agent
+      uses: webfactory/ssh-agent@v0.9.1
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to VM
+      run: |
+        ssh -o StrictHostKeyChecking=no danylo_hnyp_ir_2023@nulp-lab-1.duckdns.org "
+        echo 'Starting deployment...'
+        cd /home/danylo_hnyp_ir_2023/cloud-nulp || exit
+        git fetch --all
+        git reset --hard origin/lab_1
+        sudo systemctl restart apache2
+        echo 'Deployment finished.'
+        "
