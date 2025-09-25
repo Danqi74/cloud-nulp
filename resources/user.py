@@ -3,6 +3,7 @@ from flask_smorest import Blueprint, abort
 from flask import request
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import text
+from flask_jwt_extended import jwt_required
 
 from db import db
 from models import UserModel
@@ -14,12 +15,13 @@ blp = Blueprint("Users", __name__, description="Operations on users")
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
-
+    @jwt_required()
     @blp.response(200, UserSchema)
     def get(self, user_id):
         user = UserModel.query.get_or_404(user_id)
         return user
 
+    @jwt_required()
     def delete(self, user_id):
         user = UserModel.query.get_or_404(user_id)
         try:
@@ -30,6 +32,7 @@ class User(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, user_id):
         user = UserModel.query.get_or_404(user_id)
         data = request.get_json()
@@ -46,6 +49,7 @@ class User(MethodView):
 
 @blp.route("/user")
 class UserPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -70,6 +74,7 @@ class UserPost(MethodView):
 
 @blp.route("/users")
 class GetUsers(MethodView):
+    @jwt_required()
     @blp.response(200, UserSchema(many=True))
     def get(self):
         return UserModel.query.all()
@@ -77,6 +82,7 @@ class GetUsers(MethodView):
 
 @blp.route("/users/team/<int:team_id>")
 class TempGetUsers(MethodView):
+    @jwt_required()
     @blp.response(200, UserSchema(many=True))
     def get(self, team_id):
         users = UserModel.query.filter(UserModel.team_id == team_id).all()

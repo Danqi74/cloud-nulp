@@ -6,6 +6,7 @@ from flask import request
 from db import db
 from models import UserOrderModel, UserModel, EquipmentModel
 from schemas import UserOrderSchema
+from flask_jwt_extended import jwt_required
 
 from datetime import datetime
 
@@ -15,11 +16,12 @@ blp = Blueprint("User_orders", __name__, description="Operations on orders")
 
 @blp.route("/user_order/<int:order_id>")
 class UserOrders(MethodView):
+    @jwt_required()
     @blp.response(200, UserOrderSchema)
     def get(self, order_id):
         user_order = UserOrderModel.query.get_or_404(order_id)
         return user_order
-
+    @jwt_required()
     def delete(self, order_id):
         order = UserOrderModel.query.get_or_404(order_id)
         try:
@@ -30,6 +32,7 @@ class UserOrders(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, order_id):
         order = UserOrderModel.query.get_or_404(order_id)
         data = request.get_json()
@@ -48,6 +51,7 @@ class UserOrders(MethodView):
 
 @blp.route("/user_order")
 class user_orderPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -71,6 +75,7 @@ class user_orderPost(MethodView):
 
 @blp.route("/user_order/str")
 class user_order_by_str(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -95,6 +100,7 @@ class user_order_by_str(MethodView):
 
 @blp.route("/user_order/user/<int:user_id>")
 class User(MethodView):
+    @jwt_required()
     @blp.response(200, UserOrderSchema(many=True))
     def get(self, user_id):
         user_orders = UserOrderModel.query.filter(UserOrderModel.user_id == user_id).all()
@@ -102,6 +108,7 @@ class User(MethodView):
 
 @blp.route("/user_order/team/<int:team_id>")
 class TeamOrders(MethodView):
+    @jwt_required()
     @blp.response(200, UserOrderSchema(many=True))
     def get(self, team_id):
         users = UserModel.query.filter(UserModel.team_id == team_id).all()
@@ -114,6 +121,7 @@ class TeamOrders(MethodView):
 
 @blp.route("/user_orders")
 class GetAllUserOrders(MethodView):
+    @jwt_required()
     @blp.response(200, UserOrderSchema(many=True))
     def get(self):
         return UserOrderModel.query.all()

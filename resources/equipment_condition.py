@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask import request
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import jwt_required
 
 from db import db
 from models import EquipmentConditionModel
@@ -13,12 +14,13 @@ blp = Blueprint("Equipment_condition", __name__, description="Operations on equi
 
 @blp.route("/equipment_condition/<int:equipment_condition_id>")
 class equipment_condition(MethodView):
-
+    @jwt_required()
     @blp.response(200, EquipmentConditionSchema)
     def get(self, equipment_condition_id):
         equipment_condition = EquipmentConditionModel.query.get_or_404(equipment_condition_id)
         return equipment_condition
 
+    @jwt_required()
     def delete(self, equipment_condition_id):
         equipment_condition = EquipmentConditionModel.query.get_or_404(equipment_condition_id)
         try:
@@ -29,6 +31,7 @@ class equipment_condition(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, equipment_condition_id):
         equipment_condition = EquipmentConditionModel.query.get_or_404(equipment_condition_id)
         data = request.get_json()
@@ -42,6 +45,7 @@ class equipment_condition(MethodView):
 
 @blp.route("/equipment_condition")
 class equipment_conditionPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -63,6 +67,7 @@ class equipment_conditionPost(MethodView):
 
 @blp.route("/equipment_conditions")
 class GetAllequipment_conditions(MethodView):
+    @jwt_required()
     @blp.response(200, EquipmentConditionSchema(many=True))
     def get(self):
         return EquipmentConditionModel.query.all()

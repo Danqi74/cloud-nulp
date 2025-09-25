@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask import request
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import jwt_required
 
 from db import db
 from models import WorkerPositionModel
@@ -13,12 +14,13 @@ blp = Blueprint("Workers_position", __name__, description="Operations on worker 
 
 @blp.route("/worker_position/<int:worker_position_id>")
 class WorkerPosition(MethodView):
-
+    @jwt_required()
     @blp.response(200, WorkerPositionSchema)
     def get(self, worker_position_id):
         worker_position = WorkerPositionModel.query.get_or_404(worker_position_id)
         return worker_position
 
+    @jwt_required()
     def delete(self, worker_position_id):
         worker_position = WorkerPositionModel.query.get_or_404(worker_position_id)
         try:
@@ -29,6 +31,7 @@ class WorkerPosition(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, worker_position_id):
         worker_position = WorkerPositionModel.query.get_or_404(worker_position_id)
         data = request.get_json()
@@ -42,6 +45,7 @@ class WorkerPosition(MethodView):
 
 @blp.route("/worker_position")
 class WorkerPositionPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -63,6 +67,7 @@ class WorkerPositionPost(MethodView):
 
 @blp.route("/worker_positions")
 class GetAllWorkerPositions(MethodView):
+    @jwt_required()
     @blp.response(200, WorkerPositionSchema(many=True))
     def get(self):
         return WorkerPositionModel.query.all()
