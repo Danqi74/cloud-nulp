@@ -25,6 +25,9 @@ jobs:
         cd /home/danylo_hnyp_ir_2023/cloud-nulp || exit
         git fetch --all
         git reset --hard origin/main
+        source venv/bin/activate
+        pip install -r requirements.txt
+        exit
         sudo systemctl restart apache2
         echo 'Deployment finished.'
         "
