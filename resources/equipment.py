@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import IntegrityError
 from flask import request
+from flask_jwt_extended import jwt_required
 
 from db import db
 from models import EquipmentModel
@@ -12,12 +13,14 @@ blp = Blueprint("Equipments", __name__, description="Operations on equipment")
 
 
 @blp.route("/equipment/<int:equipment_id>")
-class Userequipments(MethodView):
+class UserEquipments(MethodView):
+    @jwt_required()
     @blp.response(200, EquipmentSchema)
     def get(self, equipment_id):
         equipment = EquipmentModel.query.get_or_404(equipment_id)
         return equipment
 
+    @jwt_required()
     def delete(self, equipment_id):
         equipment = EquipmentModel.query.get_or_404(equipment_id)
         try:
@@ -28,6 +31,7 @@ class Userequipments(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, equipment_id):
         equipment = EquipmentModel.query.get_or_404(equipment_id)
         data = request.get_json()
@@ -46,6 +50,7 @@ class Userequipments(MethodView):
 
 @blp.route("/equipment")
 class equipmentPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -70,6 +75,7 @@ class equipmentPost(MethodView):
 
 @blp.route("/equipments")
 class GetAllequipments(MethodView):
+    @jwt_required()
     @blp.response(200, EquipmentSchema(many=True))
     def get(self):
         return EquipmentModel.query.all()

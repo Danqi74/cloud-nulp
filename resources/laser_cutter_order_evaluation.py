@@ -3,6 +3,7 @@ from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 from flask import request
+from flask_jwt_extended import jwt_required
 
 from db import db
 from models import LaserCutterOrderEvaluationModel
@@ -13,12 +14,13 @@ blp = Blueprint("Laser_orders_evaluation", __name__, description="Operations on 
 
 @blp.route("/laser_evaluation/<int:id>")
 class LaserCutterOrderEvaluation(MethodView):
-
+    @jwt_required()
     @blp.response(200, LaserCutterOrderEvaluationSchema)
     def get(self, id):
         evaluation = LaserCutterOrderEvaluationModel.query.get_or_404(id)
         return evaluation
 
+    @jwt_required()
     def delete(self, id):
         evaluation = LaserCutterOrderEvaluationModel.query.get_or_404(id)
         try:
@@ -29,6 +31,7 @@ class LaserCutterOrderEvaluation(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, id):
         evaluation = LaserCutterOrderEvaluationModel.query.get_or_404(id)
         data = request.get_json()
@@ -42,6 +45,7 @@ class LaserCutterOrderEvaluation(MethodView):
 
 @blp.route("/laser_evaluation")
 class LaserCutterOrderEvaluationPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -64,6 +68,7 @@ class LaserCutterOrderEvaluationPost(MethodView):
 
 @blp.route("/laser_evaluations")
 class GetAllLaserCutterOrderEvaluations(MethodView):
+    @jwt_required()
     @blp.response(200, LaserCutterOrderEvaluationSchema(many=True))
     def get(self):
         return LaserCutterOrderEvaluationModel.query.all()
@@ -93,6 +98,7 @@ def get_column_stat(operation):
 
 @blp.route("/laser_evaluation/stat")
 class GetColumnStat(MethodView):
+    @jwt_required()
     def get(self):
         data = request.get_json()
 

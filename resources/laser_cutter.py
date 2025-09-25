@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import IntegrityError
 from flask import request
+from flask_jwt_extended import jwt_required
 
 from db import db
 from models import LaserCutterModel
@@ -13,11 +14,13 @@ blp = Blueprint("Laser_cutters", __name__, description="Operations on laser cutt
 
 @blp.route("/laser_cutter/<int:laser_id>")
 class Userlasers(MethodView):
+    @jwt_required()
     @blp.response(200, LaserCutterSchema)
     def get(self, laser_id):
         laser_cutter = LaserCutterModel.query.get_or_404(laser_id)
         return laser_cutter
 
+    @jwt_required()
     def delete(self, laser_id):
         laser = LaserCutterModel.query.get_or_404(laser_id)
         try:
@@ -28,6 +31,7 @@ class Userlasers(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, laser_id):
         laser = LaserCutterModel.query.get_or_404(laser_id)
         data = request.get_json()
@@ -45,6 +49,7 @@ class Userlasers(MethodView):
 
 @blp.route("/laser_cutter")
 class laser_cutterPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -68,6 +73,7 @@ class laser_cutterPost(MethodView):
 
 @blp.route("/laser_cutters")
 class GetAllLasers(MethodView):
+    @jwt_required()
     @blp.response(200, LaserCutterSchema(many=True))
     def get(self):
         return LaserCutterModel.query.all()

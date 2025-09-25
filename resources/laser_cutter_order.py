@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import IntegrityError
 from flask import request
+from flask_jwt_extended import jwt_required
 
 from db import db
 from models import LaserCutterOrderModel, UserModel
@@ -13,11 +14,13 @@ blp = Blueprint("Laser_orders", __name__, description="Operations on laser order
 
 @blp.route("/laser_order/<int:order_id>")
 class UserOrders(MethodView):
+    @jwt_required()
     @blp.response(200, LaserCutterOrderSchema)
     def get(self, order_id):
         laser_order = LaserCutterOrderModel.query.get_or_404(order_id)
         return laser_order
 
+    @jwt_required()
     def delete(self, order_id):
         order = LaserCutterOrderModel.query.get_or_404(order_id)
         try:
@@ -28,6 +31,7 @@ class UserOrders(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, order_id):
         order = LaserCutterOrderModel.query.get_or_404(order_id)
         data = request.get_json()
@@ -46,6 +50,7 @@ class UserOrders(MethodView):
 
 @blp.route("/laser_order")
 class laser_orderPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -70,6 +75,7 @@ class laser_orderPost(MethodView):
 
 @blp.route("/laser_order/user/<int:user_id>")
 class User(MethodView):
+    @jwt_required()
     @blp.response(200, LaserCutterOrderSchema(many=True))
     def get(self, user_id):
         laser_orders = LaserCutterOrderModel.query.filter(LaserCutterOrderModel.user_id == user_id).all()
@@ -77,6 +83,7 @@ class User(MethodView):
 
 @blp.route("/laser_order/team/<int:team_id>")
 class TeamOrders(MethodView):
+    @jwt_required()
     @blp.response(200, LaserCutterOrderSchema(many=True))
     def get(self, team_id):
         users = UserModel.query.filter(UserModel.team_id == team_id).all()
@@ -89,6 +96,7 @@ class TeamOrders(MethodView):
 
 @blp.route("/laser_orders")
 class GetAllUserOrders(MethodView):
+    @jwt_required()
     @blp.response(200, LaserCutterOrderSchema(many=True))
     def get(self):
         return LaserCutterOrderModel.query.all()

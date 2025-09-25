@@ -22,15 +22,17 @@ INSERT INTO `lab_5`.`worker_position` (`id`, `name`) VALUES
 (4, 'Secretary');
 
 
-INSERT INTO `lab_5`.`worker` (`id`, `name`, `surname`, `email`, `phone_number`, `address`, `worker_position_id`) VALUES
-(1, 'Danylo', 'Hnyp', 'dan@gmail.com', 912872685, 'lviv.lviv', 2),
-(2, 'Stephen', 'Ward', 'khan.naomi@yahoo.co.uk', 844542903, '086 Tiffany Circle, Holmesstad', 4),
-(3, 'Nancy', 'White', 'peter.khan@yahoo.co.uk', 206432344, '55 Taylor River North Jennifertown', 1),
-(4, 'Melissa', 'Jackson', 'kirsten.green@hotmail.com', 123034949, 'Studio 28 Davies Branch Rosschester', 3),
-(5, 'Douglas', 'Turner', 'shannon26@hotmail.com', 148281573, '747 Bradley Ridge Wendystad', 3),
-(6, 'John', 'Miller', 'npatel@hotmail.com', 230873695, '24 Joseph Bypass New Williamview', 1),
-(7, 'Tyler', 'Turner', 'alison25@gmail.com', 893931452, 'Flat 41 Robinson Trafficway Port Wayne', 4),
-(8, 'Laura', 'Johnson', 'LauraTJohnson@rhyta.com', 215379082, '830 Shinn Street New York', 3);
+INSERT INTO `lab_5`.`worker` 
+(`id`, `name`, `surname`, `email`, `phone_number`, `address`, `worker_position_id`, `password`) VALUES
+(1, 'Danylo', 'Hnyp', 'dan@gmail.com', 912872685, 'lviv.lviv', 2, 'pass123'),
+(2, 'Stephen', 'Ward', 'khan.naomi@yahoo.co.uk', 844542903, '086 Tiffany Circle, Holmesstad', 4, 'pass123'),
+(3, 'Nancy', 'White', 'peter.khan@yahoo.co.uk', 206432344, '55 Taylor River North Jennifertown', 1, 'pass123'),
+(4, 'Melissa', 'Jackson', 'kirsten.green@hotmail.com', 123034949, 'Studio 28 Davies Branch Rosschester', 3, 'pass123'),
+(5, 'Douglas', 'Turner', 'shannon26@hotmail.com', 148281573, '747 Bradley Ridge Wendystad', 3, 'pass123'),
+(6, 'John', 'Miller', 'npatel@hotmail.com', 230873695, '24 Joseph Bypass New Williamview', 1, 'pass123'),
+(7, 'Tyler', 'Turner', 'alison25@gmail.com', 893931452, 'Flat 41 Robinson Trafficway Port Wayne', 4, 'pass123'),
+(8, 'Laura', 'Johnson', 'LauraTJohnson@rhyta.com', 215379082, '830 Shinn Street New York', 3, 'pass123');
+
 
 
 INSERT INTO `lab_5`.`equipment_type` (`id`, `name`) VALUES
@@ -131,7 +133,7 @@ INSERT INTO `lab_5`.`laser_cutter_repair` (`id`, `date_of_repair`, `worker_id`, 
 (4, '2024-08-29', 8, 3);
 
 
-INSERT INTO `lab_5`.`laser_cutter_order_evaluations` (`order_id`, `quality_score`) VALUES
+INSERT INTO `lab_5`.`laser_cutter_order_evaluation` (`order_id`, `quality_score`) VALUES
     (1, 8),
     (2, 9),
     (3, 7),

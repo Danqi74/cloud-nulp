@@ -1,5 +1,7 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validates, ValidationError
 from datetime import datetime
+from models import WorkerPositionModel
+from db import db
 
 
 class UserSchema(Schema):
@@ -79,11 +81,36 @@ class WorkerSchema(Schema):
     name = fields.Str(required=True)
     surname = fields.Str(required=True)
     email = fields.Email(required=True)
+    password = fields.Str(required=True, load_only=True)
     phone_number = fields.Str()
     address = fields.Str()
     worker_position = fields.Nested('WorkerPositionSchema', dump_only=True)
+
+class WorkerRegisterSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+    surname = fields.Str(required=True)
+    email = fields.Email(required=True)
+    password = fields.Str(required=True, load_only=True)
+    phone_number = fields.Str(required=True)
+    address = fields.Str(required=True)
+    worker_position_id = fields.Int(required=True)
+
+    @validates("worker_position_id")
+    def validate_worker_position_id(self, value):
+        exists = db.session.query(
+            db.session.query(WorkerPositionModel).filter_by(id=value).exists()
+        ).scalar()
+
+        if not exists:
+            raise ValidationError(f"Worker position with id={value} does not exist.")
 
 class LaserCutterOrderEvaluationSchema(Schema):
     id = fields.Int(dump_only=True)
     order_id = fields.Int()
     quality_score = fields.Int()
+
+class LoginSchema(Schema):
+    id = fields.Int(dump_only=True)
+    email = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)

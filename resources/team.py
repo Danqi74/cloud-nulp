@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask import request
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import jwt_required
 
 from db import db
 from models import TeamModel
@@ -13,12 +14,13 @@ blp = Blueprint("Teams", __name__, description="Operations on teams")
 
 @blp.route("/team/<int:team_id>")
 class Team(MethodView):
-
+    @jwt_required()
     @blp.response(200, TeamSchema)
     def get(self, team_id):
         team = TeamModel.query.get_or_404(team_id)
         return team
 
+    @jwt_required()
     def delete(self, team_id):
         team = TeamModel.query.get_or_404(team_id)
         try:
@@ -29,6 +31,7 @@ class Team(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+    @jwt_required()
     def put(self, team_id):
         team = TeamModel.query.get_or_404(team_id)
         data = request.get_json()
@@ -42,6 +45,7 @@ class Team(MethodView):
 
 @blp.route("/team")
 class TeamPost(MethodView):
+    @jwt_required()
     def post(self):
         data = request.get_json()
 
@@ -63,6 +67,7 @@ class TeamPost(MethodView):
 
 @blp.route("/teams")
 class GetAllTeams(MethodView):
+    @jwt_required()
     @blp.response(200, TeamSchema(many=True))
     def get(self):
         return TeamModel.query.all()
@@ -70,6 +75,7 @@ class GetAllTeams(MethodView):
 
 @blp.route('/team/insert')
 class insert_records(MethodView):
+    @jwt_required()
     def post(self):
         try:
             for i in range(1, 11):
