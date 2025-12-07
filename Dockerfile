@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install gunicorn
 
 # Експортуємо порт
-EXPOSE 8000
+EXPOSE 8080
 
 # Команда запуску
 # main:application – це твій WSGI entrypoint із .wsgi/.swgi
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "main:application"]
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "main:application"]
