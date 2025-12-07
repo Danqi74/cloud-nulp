@@ -17,4 +17,4 @@ EXPOSE 8080
 
 # Команда запуску
 # main:application – це твій WSGI entrypoint із .wsgi/.swgi
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "main:application"]
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "gunicorn:application"]
